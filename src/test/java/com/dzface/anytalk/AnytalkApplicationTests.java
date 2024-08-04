@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 class AnytalkApplicationTests {
@@ -17,10 +18,9 @@ class AnytalkApplicationTests {
 
 	@Test
 	void testJpa() {
-		List<Question> all = this.questionRepository.findAll();
-		assertEquals(2, all.size());
-		Question q = all.get(0);
-		assertEquals("질문제목테스트 입니다.", q.getTitle());
+		List<Question> qlist = this.questionRepository.findByTitleLike("%질문%");
+		Question q = qlist.get(0);
+		assertEquals("질문", q);
 
 	}
 
