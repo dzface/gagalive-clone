@@ -1,6 +1,10 @@
+//QuestionService.java
 package com.dzface.anytalk.service;
 
+import com.dzface.anytalk.dto.QuestionDto;
+import com.dzface.anytalk.dto.UserDto;
 import com.dzface.anytalk.entity.Question;
+import com.dzface.anytalk.entity.SiteUser;
 import com.dzface.anytalk.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,11 +32,12 @@ public class QuestionService {
     public Optional<Question> getQuestion(Long id) {
         return this.questionRepository.findAllById(id);
     }
-    public void createQuestion(String title, String content) {
+    public void createQuestion(QuestionDto questionDto, SiteUser siteUser) {
         Question q =new Question();
-        q.setTitle(title);
-        q.setContent(content);
+        q.setTitle(questionDto.getTitle());
+        q.setContent(questionDto.getContent());
         q.setCreateTime(LocalDateTime.now());
+        q.setAuthor(siteUser);
         this.questionRepository.save(q);
     }
 
@@ -53,6 +58,18 @@ public class QuestionService {
         Pageable pageable = PageRequest.of(page, 10);
         return this.questionRepository.findAll(pageable);
     }
-
-
+    public void modifyQuestion(QuestionDto questionDto){
+        Question q = new Question();
+        q.setTitle(questionDto.getTitle());
+        q.setContent(questionDto.getContent());
+        q.setModifyTime(LocalDateTime.now());
+        this.questionRepository.save(q);
+    }
+    public void deleteQuestion(Question question) throws DataFormatException {
+        if (question != null) {
+            this.questionRepository.delete(question);
+        } else {
+            throw new DataFormatException("Question not found");
+        }
+    }
 }

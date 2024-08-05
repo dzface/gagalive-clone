@@ -1,13 +1,25 @@
+//QuestionController.java
 package com.dzface.anytalk.controller;
 
+import com.dzface.anytalk.dto.QuestionDto;
+import com.dzface.anytalk.dto.UserDto;
 import com.dzface.anytalk.entity.Question;
+import com.dzface.anytalk.entity.SiteUser;
 import com.dzface.anytalk.service.QuestionService;
+import com.dzface.anytalk.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
@@ -16,13 +28,23 @@ import java.util.zip.DataFormatException;
 @RequestMapping("/support")
 public class QuestionController {
     private final QuestionService questionService;
+    private final UserService userService;
 
     //게시글 작성
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("create-question")
-    public String createQuestion(@RequestParam(value="title") String title, @RequestParam(value="content") String content){
-        this.createQuestion(title, content);
+    public String  createQuestion(
+            @Valid QuestionDto questionDto,
+            BindingResult bindingResult,
+            Principal principal) {
+        if (bindingResult.hasErrors()) {
+            return "question_form";
+        }
+        SiteUser siteUser = this.userService.getUser(principal.getName());
+        this.questionService.createQuestion(questionDto, siteUser);
         return "redirect:/question/list";
     }
+
     //게시글 리스트 조회
     @GetMapping("/question-list")
     public String getQuestionList(Model model){
@@ -46,9 +68,41 @@ public class QuestionController {
         return "question_detail";
 
     }
+    // 게시글 수정
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String modifyQuestion(
+            @Valid QuestionDto questionDto,
+            BindingResult bindingResult,
+            @PathVariable("id") Long id,
+            Principal principal) throws DataFormatException {
+        if (bindingResult.hasErrors()) {
+            return "question_form";
+        }
+        Question q = this.questionService.getQuestionInfo(id);
+        if(!q.getAuthor().getName().equals(principal.getName())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+        this.questionService.modifyQuestion(questionDto);
+        questionDto.setTitle(q.getTitle());
+        questionDto.setContent(q.getContent());
+        return "question_form";
+
+    }
+    // 게시글 삭제
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/delete/{id}")
+    public String questionDelete(Principal principal, @PathVariable("id") Long id) throws DataFormatException {
+        Question question = this.questionService.getQuestionInfo(id);
+        if (!question.getAuthor().getName().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
+        }
+        this.questionService.deleteQuestion(question);
+        return "redirect:/";
+    }
     // 루트 주소를 질문리스트 출력 게시판주소로 설정(localhost:8118/question/list)
     @GetMapping("/")
     public String root(){
-        return "redirect:/question/list";
+        return "redirect:/support/question-list";
     }
 }

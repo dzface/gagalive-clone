@@ -1,3 +1,4 @@
+//Answer.java
 package com.dzface.anytalk.entity;
 
 
@@ -18,8 +19,11 @@ public class Answer {
     private Long id;
     private String content;
     private LocalDateTime createTime;
+    private LocalDateTime modifyTime;
     @ManyToOne // 한개의 질문에 답변이 여러개 달릴 수 있으므로
     private Question question; // 질문엔터티 참조하기 위해
     @OneToMany(mappedBy = "answer")
     private List<Comment> commentList;
+    @ManyToOne
+    private SiteUser author;
 }
