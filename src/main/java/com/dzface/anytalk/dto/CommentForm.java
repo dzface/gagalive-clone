@@ -1,4 +1,4 @@
-package com.dzface.anytalk.service;
+package com.dzface.anytalk.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

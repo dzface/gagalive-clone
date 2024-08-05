@@ -3,7 +3,7 @@ package com.dzface.anytalk.controller;
 import com.dzface.anytalk.entity.Comment;
 import com.dzface.anytalk.entity.Question;
 import com.dzface.anytalk.service.AnswerService;
-import com.dzface.anytalk.service.CommentForm;
+import com.dzface.anytalk.dto.CommentForm;
 import com.dzface.anytalk.service.CommentService;
 import com.dzface.anytalk.service.QuestionService;
 import jakarta.validation.Valid;

@@ -20,6 +20,6 @@ public class Answer {
     private LocalDateTime createTime;
     @ManyToOne // 한개의 질문에 답변이 여러개 달릴 수 있으므로
     private Question question; // 질문엔터티 참조하기 위해
-    @OneToMany(mappedBy = "Answer")
+    @OneToMany(mappedBy = "answer")
     private List<Comment> commentList;
 }

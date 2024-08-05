@@ -33,6 +33,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	// h2 db 의존성
 	runtimeOnly 'com.h2database:h2'
+	// 스프링 보안 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// 테스트 도구 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter'
