@@ -70,7 +70,7 @@ public class QuestionController {
     }
     // 게시글 수정
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/modify/{id}")
+    @GetMapping("/modify-question/{id}")
     public String modifyQuestion(
             @Valid QuestionDto questionDto,
             BindingResult bindingResult,
@@ -91,7 +91,7 @@ public class QuestionController {
     }
     // 게시글 삭제
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/delete/{id}")
+    @GetMapping("/delete-question/{id}")
     public String questionDelete(Principal principal, @PathVariable("id") Long id) throws DataFormatException {
         Question question = this.questionService.getQuestionInfo(id);
         if (!question.getAuthor().getName().equals(principal.getName())) {

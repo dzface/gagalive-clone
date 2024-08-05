@@ -48,7 +48,7 @@ public class AnswerController {
         return String.format("redirect:/question/detail/%s", id);
     }
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/modify/{id}")
+    @PostMapping("/modify-answer/{id}")
     public String answerModify(@Valid AnswerDto answerDto, BindingResult bindingResult,
                                @PathVariable("id") Long id, Principal principal) {
         if (bindingResult.hasErrors()) {
@@ -62,7 +62,7 @@ public class AnswerController {
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/delete/{id}")
+    @GetMapping("/delete-answer/{id}")
     public String deleteAnswer(Principal principal, @PathVariable("id") Long id) {
         Answer answer = this.answerService.getAnswer(id);
         if (!answer.getAuthor().getName().equals(principal.getName())) {
