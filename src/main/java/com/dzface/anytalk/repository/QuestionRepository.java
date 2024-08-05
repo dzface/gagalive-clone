@@ -1,6 +1,8 @@
 package com.dzface.anytalk.repository;
 
 import com.dzface.anytalk.entity.Question;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.Optional;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 특정문자열을 포함하는 레코드 찾기
     List<Question> findByTitleLike(String Title);
+    // 페이지네이션
+    Page<Question> findAll(Pageable pageable);
 
     Optional<Question> findAllById(Long id);
 }

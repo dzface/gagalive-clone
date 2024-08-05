@@ -2,6 +2,7 @@ package com.dzface.anytalk;
 
 import com.dzface.anytalk.entity.Question;
 import com.dzface.anytalk.repository.QuestionRepository;
+import com.dzface.anytalk.service.QuestionService;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,14 @@ import java.util.Optional;
 @SpringBootTest
 class AnytalkApplicationTests {
 	@Autowired // 순환참조 오류가 발생 할 수 있어 테스트 시에만 사용 권장 Setter 사용
-	private QuestionRepository questionRepository;
+	private QuestionService questionService;
 
 	@Test
 	void testJpa() {
-		List<Question> qlist = this.questionRepository.findByTitleLike("%질문%");
-		Question q = qlist.get(0);
-		assertEquals("질문", q);
-
+		for (int i = 1; i < 101; i++) {
+			String title = String.format("테스트 데이터 입니다 : [%03d]",i);
+			String content = "내용없음";
+			this.questionService.createQuestion(title, content);
+		}
 	}
-
 }
