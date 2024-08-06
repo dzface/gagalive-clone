@@ -11,7 +11,7 @@ import lombok.Setter;
 public class UserDto {
     @NotEmpty(message = "이메일은 필수항목입니다.")
     @Email
-    private String email;
+    private String userId;
     @NotEmpty(message = "비밀번호는 필수항목입니다.")
     private String password;
     @NotEmpty(message = "이름은 필수 항목입니다.")

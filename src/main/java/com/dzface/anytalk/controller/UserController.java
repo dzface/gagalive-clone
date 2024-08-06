@@ -1,53 +1,67 @@
 package com.dzface.anytalk.controller;
 
 import com.dzface.anytalk.dto.UserDto;
+import com.dzface.anytalk.entity.SiteUser;
+import com.dzface.anytalk.service.AuthenticationService;
 import com.dzface.anytalk.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@Slf4j
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/auth")
 public class UserController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/signup")
-    public String signup(@Valid UserDto userDto) {
-        return "signup_form";
+    public ResponseEntity<SiteUser> signup(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.signup(userDto));
     }
     @PostMapping("/signup")
-    public String signup(@Valid UserDto userDto, BindingResult bindingResult) {
+    public ResponseEntity<?> signup(@RequestBody UserDto userDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "signup_form";
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
 
         if (userDto.getPassword().isEmpty()) {
             bindingResult.rejectValue("password2", "passwordInCorrect",
                     "2개의 패스워드가 일치하지 않습니다.");
-            return "signup_form";
+            return  ResponseEntity.badRequest().body("Password mismatch.");
         }
         try{
-            userService.signup(userDto.getName(),
-                    userDto.getEmail(), userDto.getPassword());
+            SiteUser newUser = userService.signup(userDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
         } catch (DataIntegrityViolationException e){
-            e.printStackTrace();
-            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
-            return "signup_form";
+            log.error("Signup failed: User already exists", e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 등록된 사용자입니다.");
         } catch (Exception e) {
-            e.printStackTrace();
-            bindingResult.reject("signupFailed", e.getMessage());
-            return "signup_form";
+            log.error("Signup failed", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Signup failed: " + e.getMessage());
         }
-        return "redirect:/";
     }
     @GetMapping("/login")
-    public String login(){
-        return "login_form";
+    public String login() {
+        return "ssssss";
+    }
+    @PostMapping("/login2")
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
+        try {
+            // 사용자 인증 시도
+            Authentication authentication = authenticationService.authenticate(userDto.getUserId(), userDto.getPassword());
+            // 인증 성공 시 사용자 정보 반환
+            return ResponseEntity.ok(authentication.getPrincipal());
+        } catch (Exception e) {
+            log.error("Authentication failed for user: {}", userDto.getUserId(), e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        }
     }
 }

@@ -15,7 +15,7 @@ public class SiteUser {
     @GeneratedValue
     private Long id;
     @Column(unique = true)
-    private String email;
+    private String userId;
     @Column(unique = true)
     private String name;
     private String password;

@@ -25,8 +25,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 // h2 console CSRF 검증 예외처리
-                .csrf((csrf) -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                        .disable()) // CSRF 비활성화
                 // X-Frame-Options 헤더를 SAMEORIGIN으로 설정
                 .headers((headers) -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(
@@ -34,7 +35,7 @@ public class SecurityConfig {
 
                 .formLogin((formLogin) -> formLogin
                         //로그인페이지 주소
-                        .loginPage("/user/login")
+                        .loginPage("/auth/login")
                         //로그인 성공시 이동 주소
                         .defaultSuccessUrl("/"))
                 .logout((logout) -> logout
