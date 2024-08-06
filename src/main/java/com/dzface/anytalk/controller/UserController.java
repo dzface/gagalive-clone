@@ -48,10 +48,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Signup failed: " + e.getMessage());
         }
     }
-    @GetMapping("/login")
-    public String login() {
-        return "ssssss";
-    }
+//    @GetMapping("/login")
+//    public String login() {
+//        return "ssssss";
+//    }
     @PostMapping("/login2")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         try {

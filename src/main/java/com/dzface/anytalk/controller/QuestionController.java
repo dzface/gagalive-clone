@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/support")
 public class QuestionController {
     private final QuestionService questionService;
@@ -32,17 +33,17 @@ public class QuestionController {
 
     //게시글 작성
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("create-question")
-    public String  createQuestion(
-            @Valid QuestionDto questionDto,
+    @PostMapping("/create-question")
+    public ResponseEntity<?> createQuestion(
+            @RequestBody @Valid QuestionDto questionDto,
             BindingResult bindingResult,
             Principal principal) {
         if (bindingResult.hasErrors()) {
-            return "question_form";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
         }
         SiteUser siteUser = this.userService.getUser(principal.getName());
         this.questionService.createQuestion(questionDto, siteUser);
-        return "redirect:/question/list";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Question created successfully");
     }
 
     //게시글 리스트 조회
