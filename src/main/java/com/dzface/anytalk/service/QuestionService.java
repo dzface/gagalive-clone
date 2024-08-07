@@ -33,9 +33,19 @@ public class QuestionService {
     // 게시글 등록
     @Transactional
     public boolean createQuestion(QuestionDto questionDto) {
+        Optional<SiteUser> authorOpt = userRepository.findByUserId(questionDto.getAuthor().getUserId());
+        if (authorOpt == null) {
+            throw new IllegalArgumentException("Author not found");
+        }
+        SiteUser author = authorOpt.get();
         try {
-            Question question = createQuestionFromDto(questionDto);
-            Question savedQuestion = questionRepository.save(question);
+            Question question = new Question();
+            question.setTitle(questionDto.getTitle());
+            question.setContent(questionDto.getContent());
+            question.setCreateTime(questionDto.getCreateTime());
+            question.setModifyTime(questionDto.getModifyTime());
+            question.setAuthor(author);
+            questionRepository.save(question);
             return true;
         } catch (Exception e) {
             log.error("Error occurred during saveBoard: {}", e.getMessage(), e);
