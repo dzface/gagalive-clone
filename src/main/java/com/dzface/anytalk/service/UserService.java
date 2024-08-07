@@ -23,34 +23,35 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final AuthenticationService authenticationService;
-    public SiteUser signup(UserDto userDto){
+    // 회원 가입 여부 확인
+    public boolean isUser(String userId) {
+        return userRepository.existsByUserId(userId);
+    }
+    // 회원 가입
+    public boolean signup(UserDto userDto) {
+        try {
+            SiteUser user = convertDtoToEntity(userDto);
+            userRepository.save(user);
+            return true; // Return true if member is successfully saved
+        } catch (Exception e) {
+            // Handle any exceptions that may occur during signup
+            log.error("Error occurred during signup: {}", e.getMessage(), e);
+            return false; // Return false in case of an error
+        }
+    }
+    // 로그인
+    public boolean login(String userId, String password) {
+        Optional<SiteUser> user = userRepository.findByUserIdAndPassword(userId, password);
+        log.info("user: {}", user);
+        return user.isPresent();
+    }
+
+    // 회원 Dto -> Entity
+    private SiteUser convertDtoToEntity(UserDto userDto) {
         SiteUser user = new SiteUser();
         user.setUserId(userDto.getUserId());
+        user.setPassword(userDto.getPassword());
         user.setName(userDto.getName());
-        // 비밀번호 암호화 객체생성 지금은 객체를 생성했지만 여러곳에서 사용 시 빈으로 등록하고 호출하는 것이 편리
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        this.userRepository.save(user);
         return user;
-    }
-    public SiteUser getUser(String name) {
-        Optional<SiteUser> siteUser = this.userRepository.findByName(name);
-        if (siteUser.isPresent()) {
-            return siteUser.get();
-        } else {
-            throw new DataNotFoundException("siteuser not found");
-        }
-    }
-    @PostMapping("/api/login")
-    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
-        try {
-            Authentication authentication = authenticationService.authenticate(userDto.getName(), userDto.getPassword());
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            return ResponseEntity.ok(userDetails);
-        } catch (Exception e) {
-            log.error("Authentication failed for user: {}", userDto.getName(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-        }
     }
 }
