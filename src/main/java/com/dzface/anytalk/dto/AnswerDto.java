@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter@Setter
 public class AnswerDto {
-    private Long answerId;
+    private Long Id;
     private String content;
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter@Setter
 public class QuestionDto {
-    private Long questionId;
+    private Long Id;
     @NotBlank(message = "Title is mandatory")
     private String title;
     @NotBlank(message = "Content is mandatory")

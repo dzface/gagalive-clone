@@ -111,7 +111,7 @@ public class QuestionService {
     // 게시글 엔티티를 DTO로 변환
     private QuestionDto convertEntityToDto(Question question) {
         QuestionDto q = new QuestionDto();
-        q.setQuestionId(question.getQuestionId());
+        q.setId(question.getId());
         q.setTitle(question.getTitle());
         q.setContent(question.getContent());
         q.setCreateTime(question.getCreateTime());

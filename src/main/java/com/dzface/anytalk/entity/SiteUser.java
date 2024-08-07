@@ -1,11 +1,10 @@
 package com.dzface.anytalk.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,8 +14,10 @@ public class SiteUser {
     @GeneratedValue
     private Long id;
     @Column(unique = true)
-    private String userId;
+    private String userId; // QuestionRepository에서 참조되는 필드
     @Column(unique = true)
     private String name;
     private String password;
+    @OneToMany(mappedBy = "author")
+    private List<Question> questions;
 }

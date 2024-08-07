@@ -34,20 +34,20 @@ public class AnswerController {
 
     // 답변 등록
     @PostMapping("/create-answer/{id}")
-    public ResponseEntity<Boolean> createAnswer(@PathVariable Long questionId, AnswerDto answerDto) {
-        boolean isTrue = answerService.createAnswer(questionId, answerDto);
+    public ResponseEntity<Boolean> createAnswer(@PathVariable Long Id, AnswerDto answerDto) {
+        boolean isTrue = answerService.createAnswer(Id, answerDto);
         return ResponseEntity.ok(isTrue);
     }
     // 답변 수정
     @PutMapping("/modify-answer/{id}")
-    public ResponseEntity<Boolean> modifyAnswer(@PathVariable Long questionId, @RequestBody AnswerDto answerDto) {
-        boolean isTrue = answerService.modifyAnswer(questionId, answerDto);
+    public ResponseEntity<Boolean> modifyAnswer(@PathVariable Long Id, @RequestBody AnswerDto answerDto) {
+        boolean isTrue = answerService.modifyAnswer(Id, answerDto);
         return ResponseEntity.ok(isTrue);
     }
     // 답변 삭제
     @DeleteMapping("/delete-answer/{id}")
-    public  ResponseEntity<Boolean> deleteAnswer(@PathVariable Long answerId) {
-        boolean isTrue = answerService.deleteAnswer(answerId);
+    public  ResponseEntity<Boolean> deleteAnswer(@PathVariable Long Id) {
+        boolean isTrue = answerService.deleteAnswer(Id);
         return ResponseEntity.ok(isTrue);
     }
 }
