@@ -17,6 +17,4 @@ public class UserDto {
     @NotEmpty(message = "이름은 필수 항목입니다.")
     @Size(min=3, max = 30)
     private String name;
-
-
 }

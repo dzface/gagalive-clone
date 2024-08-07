@@ -33,18 +33,18 @@ public class QuestionService {
     // 게시글 등록
     @Transactional
     public boolean createQuestion(QuestionDto questionDto) {
-        Optional<SiteUser> authorOpt = userRepository.findByUserId(questionDto.getAuthor().getUserId());
-        if (authorOpt == null) {
+        Optional<SiteUser> userOpt = userRepository.findByUserId(questionDto.getUser().getUserId());
+        if (userOpt == null) {
             throw new IllegalArgumentException("Author not found");
         }
-        SiteUser author = authorOpt.get();
+        SiteUser user = userOpt.get();
         try {
             Question question = new Question();
             question.setTitle(questionDto.getTitle());
             question.setContent(questionDto.getContent());
             question.setCreateTime(questionDto.getCreateTime());
             question.setModifyTime(questionDto.getModifyTime());
-            question.setAuthor(author);
+            question.setUser(user);
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
@@ -58,13 +58,13 @@ public class QuestionService {
             Question question = questionRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("해당 게시글이 존재하지 않습니다.")
             );
-            SiteUser user = userRepository.findByUserId(questionDto.getAuthor().getUserId()).orElseThrow(
+            SiteUser user = userRepository.findByUserId(questionDto.getUser().getUserId()).orElseThrow(
                     () -> new RuntimeException("해당 회원이 존재하지 않습니다.")
             );
             question.setTitle(questionDto.getTitle());
             question.setContent(questionDto.getContent());
             question.setModifyTime(LocalDateTime.now());
-            question.setAuthor(user);
+            question.setUser(user);
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
@@ -121,23 +121,11 @@ public class QuestionService {
     // 게시글 엔티티를 DTO로 변환
     private QuestionDto convertEntityToDto(Question question) {
         QuestionDto q = new QuestionDto();
-        q.setId(question.getId());
         q.setTitle(question.getTitle());
         q.setContent(question.getContent());
         q.setCreateTime(question.getCreateTime());
         q.setModifyTime(question.getModifyTime());
-        q.setAuthor(question.getAuthor());
-        return q;
-    }
-    private Question createQuestionFromDto(QuestionDto questionDto) {
-        SiteUser user = userRepository.findByUserId(questionDto.getAuthor().getUserId()).orElseThrow(
-                () -> new RuntimeException("해당 회원이 존재하지 않습니다.")
-        );
-        Question q = new Question();
-        q.setTitle(questionDto.getTitle());
-        q.setContent(questionDto.getContent());
-        q.setCreateTime(LocalDateTime.now());
-        q.setAuthor(questionDto.getAuthor());
+        q.setUser(question.getUser());
         return q;
     }
 }

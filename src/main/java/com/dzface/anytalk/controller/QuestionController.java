@@ -38,14 +38,14 @@ public class QuestionController {
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 수정
-    @PutMapping("/modify-question/{id}")
-    public ResponseEntity<Boolean> modifyQuestion(@PathVariable Long questionId, @RequestBody QuestionDto questionDto) {
-        boolean isTrue = questionService.modifyQuestion(questionId, questionDto);
+    @PutMapping("/modify-question/{id}") // id는 수정하려는 게시글의 id
+    public ResponseEntity<Boolean> modifyQuestion(@PathVariable("id") Long id, @RequestBody QuestionDto questionDto) {
+        boolean isTrue = questionService.modifyQuestion(id, questionDto);
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 삭제
     @DeleteMapping("/delete-question/{id}")
-    public ResponseEntity<Boolean> deleteQuestion(@PathVariable Long id) {
+    public ResponseEntity<Boolean> deleteQuestion(@PathVariable("id") Long id) {
         boolean isTrue = questionService.deleteQuestion(id);
         return ResponseEntity.ok(isTrue);
     }

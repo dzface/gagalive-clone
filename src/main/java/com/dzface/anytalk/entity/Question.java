@@ -25,5 +25,5 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private List<Comment> commentList;
     @ManyToOne
-    private SiteUser author;
+    private SiteUser user;
 }

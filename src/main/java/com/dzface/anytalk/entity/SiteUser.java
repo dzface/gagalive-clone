@@ -18,6 +18,6 @@ public class SiteUser {
     @Column(unique = true)
     private String name;
     private String password;
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "user")
     private List<Question> questions;
 }
