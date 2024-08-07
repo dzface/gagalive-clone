@@ -16,7 +16,7 @@ import java.util.List;
 public class Answer {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long answerId;
     private String content;
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;

@@ -24,13 +24,4 @@ public class Comment {
     @ManyToOne
     private Answer answer;
 
-    public Long getQuestionId() {
-        Long result = null;
-        if (this.question != null) {
-            result = this.question.getId();
-        } else if (this.answer != null) {
-            result = this.answer.getQuestion().getId();
-        }
-        return result;
-    }
 }

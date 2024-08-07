@@ -39,8 +39,8 @@ public class QuestionController {
     }
     // 게시글 수정
     @PutMapping("/modify-question/{id}")
-    public ResponseEntity<Boolean> modifyQuestion(@PathVariable Long id, @RequestBody QuestionDto questionDto) {
-        boolean isTrue = questionService.modifyQuestion(id, questionDto);
+    public ResponseEntity<Boolean> modifyQuestion(@PathVariable Long questionId, @RequestBody QuestionDto questionDto) {
+        boolean isTrue = questionService.modifyQuestion(questionId, questionDto);
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 삭제

@@ -53,11 +53,12 @@ public class QuestionService {
             );
             question.setTitle(questionDto.getTitle());
             question.setContent(questionDto.getContent());
+            question.setModifyTime(LocalDateTime.now());
             question.setAuthor(user);
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
-            log.info("Error occurred during modifyBoard: {}", e.getMessage(), e);
+            log.error("Error occurred during modifyBoard: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -110,7 +111,7 @@ public class QuestionService {
     // 게시글 엔티티를 DTO로 변환
     private QuestionDto convertEntityToDto(Question question) {
         QuestionDto q = new QuestionDto();
-        q.setId(question.getId());
+        q.setQuestionId(question.getQuestionId());
         q.setTitle(question.getTitle());
         q.setContent(question.getContent());
         q.setCreateTime(question.getCreateTime());
@@ -125,11 +126,8 @@ public class QuestionService {
         Question q = new Question();
         q.setTitle(questionDto.getTitle());
         q.setContent(questionDto.getContent());
-        q.setCreateTime(questionDto.getCreateTime());
-        q.setModifyTime(questionDto.getModifyTime());
+        q.setCreateTime(LocalDateTime.now());
         q.setAuthor(questionDto.getAuthor());
         return q;
     }
-
-
 }
