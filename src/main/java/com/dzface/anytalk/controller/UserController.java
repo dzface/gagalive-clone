@@ -23,9 +23,9 @@ public class UserController {
 
     // 회원 가입 여부 확인
     @GetMapping("/exists/{email}")
-    public ResponseEntity<Boolean> userExists(@PathVariable String userId) {
-        log.info("userId: {}", userId);
-        boolean isTrue = userService.isUser(userId);
+    public ResponseEntity<Boolean> userExists(@PathVariable String Id) {
+        log.info("userId: {}", Id);
+        boolean isTrue = userService.isUser(Id);
         return ResponseEntity.ok(!isTrue);
     }
 

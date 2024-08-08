@@ -1,50 +1,37 @@
+//CommentController.java
 package com.dzface.anytalk.controller;
 
-import com.dzface.anytalk.dto.AnswerDto;
 import com.dzface.anytalk.dto.CommentDto;
-import com.dzface.anytalk.entity.Comment;
-import com.dzface.anytalk.entity.Question;
-import com.dzface.anytalk.service.AnswerService;
 import com.dzface.anytalk.service.CommentService;
-import com.dzface.anytalk.service.QuestionService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
-import java.util.Optional;
-import java.util.zip.DataFormatException;
+import java.util.List;
 
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/support")
 public class CommentController {
-    @Autowired
-    private CommentService commentService;
-    @Autowired
-    private QuestionService questionService;
-    @Autowired
-    private AnswerService answerService;
-    // 댓글 생성
-    @PostMapping("/create-comment/{id}")
-    public ResponseEntity<Boolean> createComment(@PathVariable("id") Long answerId, @RequestBody CommentDto commentDto) {
-        boolean isTrue = commentService.createComment(answerId, commentDto);
-        return ResponseEntity.ok(isTrue);
+    private final CommentService commentService;
+
+
+    @PostMapping("create-comment/{id}")
+    public ResponseEntity<CommentDto> createComment(@PathVariable("id") Long questionId,
+                                                    @RequestBody CommentDto commentDto) {
+        CommentDto createdComment = commentService.createComment(questionId, commentDto.getUserId(), commentDto.getParentId(), commentDto.getContent());
+        return ResponseEntity.ok(createdComment);
     }
-//    // 댓글 수정
-//    @PutMapping("/modify-comment/{id}")
-//    public ResponseEntity<Boolean> modifyCommment(@PathVariable Long answerId, @RequestBody CommentDto commentDto) {
-//        boolean isTrue = commentService.modifyComment(answerId, commentDto);
-//        return ResponseEntity.ok(isTrue);
-//    }
-//    // 댓글 삭제
-//    @DeleteMapping("/delete-comment/{id}")
-//    public  ResponseEntity<Boolean> deleteCommment(@PathVariable Long answerId, @RequestBody CommentDto commentDto) {
-//        boolean isTrue = commentService.delectComment(answerId, commentDto);
-//        return ResponseEntity.ok(isTrue);
-//    }
 
+    @GetMapping("/question/{questionId}")
+    public ResponseEntity<List<CommentDto>> getCommentsByQuestionId(@PathVariable Long questionId) {
+        List<CommentDto> comments = commentService.getCommentsByQuestionId(questionId);
+        return ResponseEntity.ok(comments);
+    }
 
-
+    @GetMapping("/comment/{commentId}")
+    public ResponseEntity<CommentDto> getCommentById(@PathVariable Long commentId) {
+        CommentDto comment = commentService.getCommentById(commentId);
+        return ResponseEntity.ok(comment);
+    }
 }

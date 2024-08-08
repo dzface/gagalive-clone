@@ -15,13 +15,12 @@ import java.util.List;
 public class Question {
     @Id
     @GeneratedValue
+    @Column(name = "Question_id")
     private Long Id;
     private String title;
     private String content;
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) // 질문에서 답변을 참조 할 수 있도록 연관관계 설정 질문이 삭제되면 답변도 함께 삭제되도록 cascade 설정
-    private List<Answer> answerList;
     @OneToMany(mappedBy = "question")
     private List<Comment> commentList;
     @ManyToOne

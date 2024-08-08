@@ -1,12 +1,39 @@
+//CommentDto.java
 package com.dzface.anytalk.dto;
 
+import com.dzface.anytalk.entity.Comment;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @Setter
 public class CommentDto {
-    @NotEmpty(message = "내용을 입력해주세요.")
+    private Long id;
     private String content;
+    private Boolean deletedStatus;
+    private String createTime;
+    private String modifyTime;
+    private Long parentId;
+    private Long questionId;
+    private String userId;
+    private List<CommentDto> children;
+
+    // 엔티티를 DTO로 변환하는 메서드
+    public static CommentDto fromEntity(Comment comment) {
+        CommentDto dto = new CommentDto();
+        dto.setId(comment.getId());
+        dto.setContent(comment.getContent());
+        dto.setDeletedStatus(comment.getDeletedStatus());
+        dto.setCreateTime(comment.getCreateTime());
+        dto.setModifyTime(comment.getModifyTime());
+        dto.setParentId(comment.getParent() != null ? comment.getParent().getId() : null);
+        dto.setQuestionId(comment.getQuestion().getId());
+        dto.setUserId(comment.getUser().getUserId());
+        dto.setChildren(comment.getChildren().stream().map(CommentDto::fromEntity).collect(Collectors.toList()));
+        return dto;
+    }
 }

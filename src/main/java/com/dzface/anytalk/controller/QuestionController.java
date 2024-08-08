@@ -38,7 +38,7 @@ public class QuestionController {
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 수정
-    @PutMapping("/modify-question/{id}") // id는 수정하려는 게시글의 id
+    @PutMapping("/modify-question/{id}") // id는 수정하려는 게시글의 id @PathVariable("id") Long id 중요
     public ResponseEntity<Boolean> modifyQuestion(@PathVariable("id") Long id, @RequestBody QuestionDto questionDto) {
         boolean isTrue = questionService.modifyQuestion(id, questionDto);
         return ResponseEntity.ok(isTrue);
@@ -57,10 +57,10 @@ public class QuestionController {
     }
     // 페이지 리스트 조회
     @GetMapping("/page-list")
-    public String pageList(Model model, @RequestParam(value="page", defaultValue = "0") int page){
+    public ResponseEntity<Page<Question>> pageList(Model model, @RequestParam(value="page", defaultValue = "0") int page){
         Page<Question> paging = this.questionService.getPageList(page);
         model.addAttribute("paging", paging);
-        return "question_list";
+        return ResponseEntity.ok(paging);
     }
     // 게시글 상세 조회
     @GetMapping("/detailed-question/{id}")
