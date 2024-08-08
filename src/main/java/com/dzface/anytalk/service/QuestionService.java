@@ -100,13 +100,19 @@ public class QuestionService {
         }
         return listDto;
     }
-    //페이지네이션
-    public Page<Question> getPageList(int page){
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createTime"));
-        //PageRequest.of(페이지번호, 한페이지당 게시물 갯수)
-        Pageable pageable = PageRequest.of(page, 10);
-        return this.questionRepository.findAll(pageable);
+    public Page<QuestionDto> getPageList(int page){
+        // 정렬 조건 추가
+        Sort sort = Sort.by(Sort.Order.desc("createTime"));
+        // 페이지 요청 생성 (페이지 번호, 페이지 당 항목 수, 정렬 기준)
+        Pageable pageable = PageRequest.of(page, 10, sort);
+        // Page<Question>를 가져옴
+        Page<Question> questionPage = questionRepository.findAll(pageable);
+        // Page<Question>을 Page<QuestionDto>로 변환
+        Page<QuestionDto> questionDtoPage = questionPage.map(question -> {
+            // 필요한 필드만 포함한 QuestionDto로 변환
+            return new QuestionDto();
+        });
+        return questionDtoPage;
     }
     // 게시글 상세 조회
     public QuestionDto getDetailedQuestion(Long id) {

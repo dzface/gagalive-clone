@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,11 +60,11 @@ public class QuestionController {
     }
     // 페이지 리스트 조회
     @GetMapping("/page-list")
-    public ResponseEntity<Page<Question>> pageList(Model model, @RequestParam(value="page", defaultValue = "0") int page){
-        Page<Question> paging = this.questionService.getPageList(page);
-        model.addAttribute("paging", paging);
+    public ResponseEntity<Page<QuestionDto>> pageList(@RequestParam(value="page", defaultValue = "0") int page){
+        Page<QuestionDto> paging = this.questionService.getPageList(page);
         return ResponseEntity.ok(paging);
     }
+
     // 게시글 상세 조회
     @GetMapping("/detailed-question/{id}")
     public ResponseEntity<QuestionDto> getBoardDetail(@PathVariable Long id) {

@@ -19,4 +19,5 @@ public class QuestionDto {
     private String content;
     private List<Comment> commentList;
     private UserDto userDto;
+
 }
