@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.zip.DataFormatException;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
@@ -33,7 +31,7 @@ public class QuestionService {
     // 게시글 등록
     @Transactional
     public boolean createQuestion(QuestionDto questionDto) {
-        Optional<SiteUser> userOpt = userRepository.findByUserId(questionDto.getUser().getUserId());
+        Optional<SiteUser> userOpt = userRepository.findByUserId(questionDto.getUserDto().getUserId());
         if (userOpt == null) {
             throw new IllegalArgumentException("Author not found");
         }
@@ -42,8 +40,6 @@ public class QuestionService {
             Question question = new Question();
             question.setTitle(questionDto.getTitle());
             question.setContent(questionDto.getContent());
-            question.setCreateTime(questionDto.getCreateTime());
-            question.setModifyTime(questionDto.getModifyTime());
             question.setUser(user);
             questionRepository.save(question);
             return true;
@@ -58,12 +54,12 @@ public class QuestionService {
             Question question = questionRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("해당 게시글이 존재하지 않습니다.")
             );
-            SiteUser user = userRepository.findByUserId(questionDto.getUser().getUserId()).orElseThrow(
+            SiteUser user = userRepository.findByUserId(questionDto.getUserDto().getUserId()).orElseThrow(
                     () -> new RuntimeException("해당 회원이 존재하지 않습니다.")
             );
             question.setTitle(questionDto.getTitle());
             question.setContent(questionDto.getContent());
-            question.setModifyTime(LocalDateTime.now());
+            question.setModifyTime(String.valueOf(LocalDateTime.now()));
             question.setUser(user);
             questionRepository.save(question);
             return true;
@@ -86,6 +82,19 @@ public class QuestionService {
         }
     }
     // 게시글 전체 조회
+    public Map<String, Object> getQuestionList(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        List<Question> list = questionRepository.findAll(pageable).getContent();
+        List<QuestionDto> listDto = new ArrayList<>();
+        for(Question question : list) {
+            listDto.add(convertEntityToDto(question));
+        }
+        int cnt =questionRepository.findAll(pageable).getTotalPages();
+        Map<String, Object> result = new HashMap<>();
+        result.put("boards", listDto);
+        result.put("totalPages", cnt);
+        return result;
+    }
     public List<QuestionDto> getQuestionList() {
         List<Question> list = questionRepository.findAll();
         List<QuestionDto> listDto = new ArrayList<>();
@@ -120,12 +129,18 @@ public class QuestionService {
     }
     // 게시글 엔티티를 DTO로 변환
     private QuestionDto convertEntityToDto(Question question) {
-        QuestionDto q = new QuestionDto();
-        q.setTitle(question.getTitle());
-        q.setContent(question.getContent());
-        q.setCreateTime(question.getCreateTime());
-        q.setModifyTime(question.getModifyTime());
-        q.setUser(question.getUser());
-        return q;
+        QuestionDto dto = new QuestionDto();
+        dto.setId(question.getId());
+        dto.setTitle(question.getTitle());
+        dto.setContent(question.getContent());
+        dto.setUserDto(convertUserToDto(question.getUser()));
+        return dto;
+    }
+    private UserDto convertUserToDto(SiteUser user) {
+        UserDto dto = new UserDto();
+        dto.setUserId(user.getUserId());
+        dto.setName(user.getName());
+        // 추가 필드들 설정
+        return dto;
     }
 }

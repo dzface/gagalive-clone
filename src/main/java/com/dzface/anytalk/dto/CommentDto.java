@@ -15,8 +15,6 @@ public class CommentDto {
     private Long id;
     private String content;
     private Boolean deletedStatus;
-    private String createTime;
-    private String modifyTime;
     private Long parentId;
     private Long questionId;
     private String userId;
@@ -28,8 +26,6 @@ public class CommentDto {
         dto.setId(comment.getId());
         dto.setContent(comment.getContent());
         dto.setDeletedStatus(comment.getDeletedStatus());
-        dto.setCreateTime(comment.getCreateTime());
-        dto.setModifyTime(comment.getModifyTime());
         dto.setParentId(comment.getParent() != null ? comment.getParent().getId() : null);
         dto.setQuestionId(comment.getQuestion().getId());
         dto.setUserId(comment.getUser().getUserId());

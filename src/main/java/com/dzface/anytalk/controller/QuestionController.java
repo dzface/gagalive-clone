@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 
 @RequiredArgsConstructor
@@ -51,8 +52,9 @@ public class QuestionController {
     }
     // 게시글 목록 조회
     @GetMapping("/question-list")
-    public ResponseEntity<List<QuestionDto>> getQuestionList() {
-        List<QuestionDto> list = questionService.getQuestionList();
+    public ResponseEntity<Map<String, Object>> getQuestionList(@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> list = questionService.getQuestionList(page, size);
         return ResponseEntity.ok(list);
     }
     // 페이지 리스트 조회

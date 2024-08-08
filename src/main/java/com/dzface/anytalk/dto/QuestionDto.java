@@ -12,12 +12,11 @@ import java.util.List;
 
 @Getter@Setter
 public class QuestionDto {
+    private Long id;
     @NotBlank(message = "Title is mandatory")
     private String title;
     @NotBlank(message = "Content is mandatory")
     private String content;
-    private LocalDateTime createTime;
-    private LocalDateTime modifyTime;
     private List<Comment> commentList;
-    private SiteUser user;
+    private UserDto userDto;
 }
