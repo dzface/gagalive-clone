@@ -31,11 +31,8 @@ public class QuestionService {
     // 게시글 등록
     @Transactional
     public boolean createQuestion(QuestionDto questionDto) {
-        Optional<SiteUser> userOpt = userRepository.findByUserId(questionDto.getUserDto().getUserId());
-        if (userOpt == null) {
-            throw new IllegalArgumentException("Author not found");
-        }
-        SiteUser user = userOpt.get();
+        SiteUser user = userRepository.findByUserId(questionDto.getUserDto().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Author not found"));
         try {
             Question question = new Question();
             question.setTitle(questionDto.getTitle());
