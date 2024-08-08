@@ -16,21 +16,21 @@ public class CommentController {
     private final CommentService commentService;
 
 
-    @PostMapping("create-comment/{id}")
-    public ResponseEntity<CommentDto> createComment(@PathVariable("id") Long questionId,
+    @PostMapping("create-comment/{questionId}")
+    public ResponseEntity<CommentDto> createComment(@PathVariable("questionId") Long questionId,
                                                     @RequestBody CommentDto commentDto) {
         CommentDto createdComment = commentService.createComment(questionId, commentDto.getUserId(), commentDto.getParentId(), commentDto.getContent());
         return ResponseEntity.ok(createdComment);
     }
 
-    @GetMapping("/question/{questionId}")
-    public ResponseEntity<List<CommentDto>> getCommentsByQuestionId(@PathVariable Long questionId) {
+    @GetMapping("/question/{questionId}") ///주소 대소문자 꼭확인 ! @PathVariable 랑 대소문자 안맞추면 적용 안됨
+    public ResponseEntity<List<CommentDto>> getCommentsByQuestionId(@PathVariable("questionId") Long questionId) {
         List<CommentDto> comments = commentService.getCommentsByQuestionId(questionId);
         return ResponseEntity.ok(comments);
     }
 
     @GetMapping("/comment/{commentId}")
-    public ResponseEntity<CommentDto> getCommentById(@PathVariable Long commentId) {
+    public ResponseEntity<CommentDto> getCommentById(@PathVariable("commentId") Long commentId) {
         CommentDto comment = commentService.getCommentById(commentId);
         return ResponseEntity.ok(comment);
     }
