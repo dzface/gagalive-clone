@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,51 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         return CommentDto.fromEntity(savedComment);
+    }
+    // 댓글 수정
+    public boolean modifyComment(Long id, CommentDto commentDto) {
+        try{
+            Comment comment = commentRepository.findById(id).orElseThrow(
+                    () -> new RuntimeException("해당 댓글이 존재하지 않습니다.")
+            );
+            comment.setContent(commentDto.getContent());
+            comment.setModifyTime(String.valueOf(LocalDateTime.now()));
+            commentRepository.save(comment);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+    }
+    // 댓글 삭제
+    public boolean deleteComment(Long id, CommentDto commentDto) {
+        try{
+            Comment comment = commentRepository.findById(id).orElseThrow(
+                    () -> new RuntimeException("해당 댓글이 존재하지 않습니다.")
+            );
+            comment.setDeletedStatus(true);
+            comment.setModifyTime(String.valueOf(LocalDateTime.now()));
+            commentRepository.save(comment);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+
+    // 댓글 실제 삭제
+    public boolean deletePhysicalComment(Long id) {
+        try {
+            Comment comment = commentRepository.findById(id).orElseThrow(
+                    () -> new RuntimeException("해당 댓글이 존재하지 않습니다.")
+            );
+            commentRepository.delete(comment);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     @Transactional(readOnly = true)
